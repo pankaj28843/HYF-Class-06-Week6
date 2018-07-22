@@ -49,17 +49,44 @@ form.addEventListener('submit', event => {
         }
 
 
-
-
         for (const movie of data.Search) {
             const tr = document.createElement('tr');
             tbody.appendChild(tr);
 
-            tr.innerHTML = `<td>${movie.Title}</td>
-        <td>
-            <img src="${movie.Poster}">
-        </td>`;
+            tr.innerHTML = `<td>
+                <a href='#' class='movieTitle'>${movie.Title}</a>
+                <div class='movieDetails'></div>
+                </td>
+                <td>
+                    <img height="150" src="${movie.Poster}">
+                </td>
+            `;
+
+            const link = tr.querySelector('.movieTitle');
+            const div = tr.querySelector('.movieDetails');
+
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                showMovieDetails(movie, div);
+            })
+
         }
 
     });
 });
+
+
+function showMovieDetails(movie, div) {
+    const url = 'http://www.omdbapi.com/?apikey=6d847b4e&i=' + movie.imdbID;
+
+    fetchJSONData(url, movieDetails => {
+        div.innerHTML = `
+                IMDB Rating: ${movieDetails.imdbRating} <br>
+                IMDB Votes count: ${movieDetails.imdbVotes} <br>
+                Director: ${movieDetails.Director} <br>
+
+            `;
+
+    });
+};
